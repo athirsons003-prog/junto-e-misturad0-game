@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Junto e Misturado - O Quiz do Baião de Dois</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5dc;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    transition: background-image 0.5s ease-in-out;
+}
+
+/* Imagens personalizadas conforme solicitado */
+.bg-inicial { background-image: url('telainicial1.jpg'); }
+.bg-geral { background-image: url('demaistelas1.jpg'); }
+
+.container {
+    width: 95%;
+    max-width: 650px;
+    background: rgba(255, 255, 255, 0.75); /* Opacidade ajustada para visibilidade do fundo */
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    text-align: center;
+    position: relative;
+    margin: 20px;
+    box-sizing: border-box;
+    backdrop-filter: blur(3px);
+}
+
+.tela { display: none; }
+.ativa { display: block; }
+
+button {
+    width: 100%;
+    margin: 8px 0;
+    padding: 14px;
+    border-radius: 12px;
+    background: #ffd89b; /* Tom vibrante do Nordeste */
+    color: #5d4037;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid #e0c97f;
+    font-size: 15px;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    background: #ffcc80;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.opcao-btn { text-align: left; background: #fff8e1; }
+
+.start { background: #ff9800; color: white; border: none; }
+
+.voltar {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: auto;
+    padding: 8px 15px;
+}
+
+.barra { height: 10px; background: #eee; border-radius: 10px; margin-bottom: 25px; overflow: hidden; }
+.progresso { height: 100%; background: #ff9800; width: 0%; transition: width 0.4s ease; }
+
+h1, h2 { color: #d84315; margin-bottom: 20px; font-size: 22px; }
+.pergunta-texto { font-size: 18px; margin-bottom: 20px; color: #3e2723; font-weight: 500; }
+
+.story-box {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 20px;
+    border-radius: 15px;
+    margin: 20px 0;
+    text-align: left;
+    border-left: 5px solid #d84315;
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+.story-box p { margin: 12px 0; line-height: 1.6; color: #3e2723; }
+
+textarea, input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: 2px solid #ff9800;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+    font-size: 14px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.9);
+}
+</style>
+</head>
+
+<body class="bg-inicial" id="game-body">
+
+<div id="menu" class="container tela ativa">
+    <h1 style="font-size: 32px;">Junto e Misturado</h1>
+    <p style="font-size: 18px; color: #5d4037; font-weight: 600;">A ciência por trás do Baião de Dois!</p>
+    <button class="start" onclick="iniciarJogo()">▶ Iniciar Investigação</button>
+    <button onclick="abrirCreditos()">📜 Créditos</button>
+</div>
+
+<div id="creditos" class="container tela">
+    <button class="voltar" onclick="voltarMenu()">⬅ Voltar</button>
+    <h1>📜 Créditos</h1>
+    <div style="text-align: left; padding: 10px; color: #3e2723;">
+        <p><strong>Desenvolvimento:</strong> Quiz Educativo</p>
+        <p><strong>Tema:</strong> História e Ciência do Baião de Dois</p>
+        <p><strong>Objetivo:</strong> Ensinar química dos alimentos para crianças através da cultura nordestina.</p>
+    </div>
+    <button class="start" onclick="voltarMenu()">🏠 Voltar ao Início</button>
+</div>
+
+<div id="jogo" class="container tela">
+    <div class="barra"><div class="progresso" id="progresso"></div></div>
+
+    <div id="tela1" class="tela ativa">
+        <h1>A Origem do Prato</h1>
+        <div class="story-box">
+            <p>O <strong>baião de dois</strong> é um prato tradicional do Nordeste brasileiro, formado pela combinação de arroz e feijão-de-corda.</p>
+            <p>Essa mistura surgiu da necessidade de aproveitar alimentos disponíveis, criando uma refeição nutritiva e acessível para o povo do sertão.</p>
+            <p>Além da importância cultural, o preparo envolve processos científicos incríveis como o calor, a absorção de água e transformações químicas que mudam a textura dos grãos.</p>
+            <p style="color:#d84315; font-weight:bold; text-align: center; border-top: 1px solid #ddd; padding-top: 10px;">🧪 Você está pronto para ser um cientista da cozinha?</p>
+        </div>
+        <button class="start" onclick="proximaTela()">🔥 Começar Desafio</button>
+    </div>
+
+    <div id="tela2" class="tela">
+        <h2>Pergunta 1 de 10</h2>
+        <p class="pergunta-texto">O baião de dois é formado principalmente por:</p>
+        <button class="opcao-btn" onclick="registrarResp(1, 'Ingredientes', 'Arroz e feijão')">A) Arroz e feijão</button>
+        <button class="opcao-btn" onclick="registrarResp(1, 'Ingredientes', 'Carne e leite')">B) Carne e leite</button>
+        <button class="opcao-btn" onclick="registrarResp(1, 'Ingredientes', 'Milho e açúcar')">C) Milho e açúcar</button>
+    </div>
+
+    <div id="tela3" class="tela">
+        <h2>Pergunta 2 de 10</h2>
+        <p class="pergunta-texto">Explique por que a combinação arroz e feijão é nutricionalmente importante:</p>
+        <textarea id="input2" placeholder="Sua explicação..."></textarea>
+        <button class="start" onclick="registrarAberta(2, 'Nutrição')">Enviar Resposta</button>
+    </div>
+
+    <div id="tela4" class="tela">
+        <h2>Pergunta 3 de 10</h2>
+        <p class="pergunta-texto">O arroz é rico em ______, um tipo de carboidrato.</p>
+        <input type="text" id="input3" placeholder="Complete a lacuna...">
+        <button class="start" onclick="registrarAberta(3, 'Carboidratos')">Próxima</button>
+    </div>
+
+    <div id="tela5" class="tela">
+        <h2>Pergunta 4 de 10</h2>
+        <p class="pergunta-texto">Verdadeiro ou Falso: O calor não interfere nas transformações dos alimentos.</p>
+        <button class="opcao-btn" onclick="registrarResp(4, 'Interferência do calor', 'Verdadeiro')">Verdadeiro</button>
+        <button class="opcao-btn" onclick="registrarResp(4, 'Interferência do calor', 'Falso')">Falso</button>
+    </div>
+
+    <div id="tela6" class="tela">
+        <h2>Pergunta 5 de 10</h2>
+        <p class="pergunta-texto">Identifique o erro na frase: "Durante o cozimento, o alimento não sofre nenhuma transformação química."</p>
+        <textarea id="input5" placeholder="Descreva o erro aqui..."></textarea>
+        <button class="start" onclick="registrarAberta(5, 'Identificar Erro')">Enviar</button>
+    </div>
+
+    <div id="tela7" class="tela">
+        <h2>Pergunta 6 de 10</h2>
+        <p class="pergunta-texto">O processo que ocorre com o amido ao aquecer é:</p>
+        <button class="opcao-btn" onclick="registrarResp(6, 'Processo do amido', 'Evaporação')">A) Evaporação</button>
+        <button class="opcao-btn" onclick="registrarResp(6, 'Processo do amido', 'Gelatinização')">B) Gelatinização</button>
+        <button class="opcao-btn" onclick="registrarResp(6, 'Processo do amido', 'Congelamento')">C) Congelamento</button>
+    </div>
+
+    <div id="tela8" class="tela">
+        <h2>Pergunta 7 de 10</h2>
+        <p class="pergunta-texto">Explique o papel da água no cozimento do arroz:</p>
+        <textarea id="input7" placeholder="Sua resposta..."></textarea>
+        <button class="start" onclick="registrarAberta(7, 'Papel da água')">Próxima</button>
+    </div>
+
+    <div id="tela9" class="tela">
+        <h2>Pergunta 8 de 10</h2>
+        <p class="pergunta-texto">Verdadeiro ou Falso: A água pode penetrar nos grãos por difusão e osmose.</p>
+        <button class="opcao-btn" onclick="registrarResp(8, 'Difusão/Osmose', 'Verdadeiro')">Verdadeiro</button>
+        <button class="opcao-btn" onclick="registrarResp(8, 'Difusão/Osmose', 'Falso')">Falso</button>
+    </div>
+
+    <div id="tela10" class="tela">
+        <h2>Pergunta 9 de 10</h2>
+        <p class="pergunta-texto">O aumento da temperatura aumenta a ______ das partículas.</p>
+        <input type="text" id="input9" placeholder="Complete com a palavra científica...">
+        <button class="start" onclick="registrarAberta(9, 'Temperatura/Partículas')">Enviar</button>
+    </div>
+
+    <div id="tela11" class="tela">
+        <h2>Pergunta 10 de 10</h2>
+        <p class="pergunta-texto">Identifique o erro na frase: "O feijão não possui importância nutricional."</p>
+        <textarea id="input10" placeholder="Corrija o erro aqui..."></textarea>
+        <button class="start" onclick="registrarAberta(10, 'Importância do feijão')">Finalizar Quiz</button>
+    </div>
+
+    <div id="tela12" class="tela">
+        <h1 style="color:#d84315">🌵 Investigação Concluída!</h1>
+        <p style="font-size: 18px; color: #3e2723;">Você explorou os segredos do Baião de Dois com sucesso!</p>
+        <button onclick="gerarPDF()">📄 Baixar Relatório (PDF)</button>
+        <button class="start" onclick="location.reload()">🏠 Voltar ao Início</button>
+    </div>
+</div>
+
+<script>
+let telaAtual = 1;
+const respostasUsuario = [];
+const bodyElement = document.getElementById('game-body');
+
+function iniciarJogo() {
+    document.getElementById("menu").classList.remove("ativa");
+    document.getElementById("jogo").classList.add("ativa");
+    bodyElement.className = "bg-geral";
+    mostrarTela(1);
+}
+
+function abrirCreditos() {
+    document.getElementById("menu").classList.remove("ativa");
+    document.getElementById("creditos").classList.add("ativa");
+}
+
+function voltarMenu() {
+    document.getElementById("creditos").classList.remove("ativa");
+    document.getElementById("jogo").classList.remove("ativa");
+    document.getElementById("menu").classList.add("ativa");
+    bodyElement.className = "bg-inicial";
+}
+
+function mostrarTela(id) {
+    for (let i = 1; i <= 12; i++) {
+        let t = document.getElementById("tela" + i);
+        if(t) t.classList.remove("ativa");
+    }
+    document.getElementById("tela" + id).classList.add("ativa");
+    atualizarBarra();
+}
+
+function atualizarBarra() {
+    const totalTelasQuestoes = 11; 
+    const percent = ((telaAtual - 1) / totalTelasQuestoes) * 100;
+    document.getElementById("progresso").style.width = percent + "%";
+}
+
+function proximaTela() {
+    if (telaAtual < 12) {
+        telaAtual++;
+        mostrarTela(telaAtual);
+    }
+}
+
+function registrarResp(num, pergunta, resposta) {
+    respostasUsuario.push({ num, pergunta, resposta });
+    proximaTela();
+}
+
+function registrarAberta(num, pergunta) {
+    const val = document.getElementById("input" + num).value.trim();
+    if(!val) return alert("Por favor, preencha sua resposta!");
+    respostasUsuario.push({ num, pergunta, resposta: val });
+    proximaTela();
+}
+
+function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    doc.setFontSize(18);
+    doc.setTextColor(216, 67, 21); // Tom de terra/nordeste
+    doc.text("Relatório: Junto e Misturado - Ciência no Baião", 10, 20);
+    
+    let y = 35;
+    doc.setFontSize(11);
+    doc.setTextColor(0, 0, 0);
+    
+    respostasUsuario.forEach(r => {
+        if(y > 270) { doc.addPage(); y = 20; }
+        
+        let txtPergunta = doc.splitTextToSize(`Questão ${r.num} (${r.pergunta}):`, 180);
+        doc.setFont(undefined, 'bold');
+        doc.text(txtPergunta, 10, y);
+        y += (txtPergunta.length * 6);
+        
+        doc.setFont(undefined, 'normal');
+        let txtResp = doc.splitTextToSize(`Sua Resposta: ${r.resposta}`, 170);
+        doc.text(txtResp, 15, y);
+        y += (txtResp.length * 7) + 5;
+    });
+    
+    doc.save("Relatorio_Baiao_de_Dois.pdf");
+}
+</script>
+</body>
+</html>
